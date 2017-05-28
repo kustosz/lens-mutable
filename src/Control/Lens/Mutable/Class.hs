@@ -26,10 +26,12 @@ mview l s = fmap getConst $ getCompose $ l (Compose . pure . Const) s
 (^!) :: Applicative m => s -> AMGetter m s a -> m a
 (^!) = flip mview
 
+infixl 8 !~
 mset, (!~) :: Applicative m => AMSetter m s t a b -> b -> s -> m t
 mset l a = mover l $ const a
 (!~) = mset
 
+infixl 8 %!~
 mover, (%!~) :: Applicative m => AMSetter m s t a b -> (a -> b) -> s -> m t
 mover l f r = fmap runIdentity $ getCompose $ l (pure . f) r
 (%!~) = mover

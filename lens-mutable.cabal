@@ -32,5 +32,6 @@ test-suite spec
     , hspec
     , QuickCheck
   other-modules:
-      MLens.MLensSpec
+      Control.Lens.Mutable.InteroperabilitySpec
+      Control.Lens.Mutable.LawsSpec
   default-language: Haskell2010
