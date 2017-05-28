@@ -3,6 +3,7 @@
 module Control.Lens.Mutable.Class where
 
 import Data.Traversable
+import Data.Monoid
 import Control.Applicative
 import Data.Functor.Compose
 import Data.Functor.Identity
@@ -25,6 +26,12 @@ mview :: Applicative m => AMGetter m s a -> s -> m a
 mview l s = fmap getConst $ getCompose $ l (Compose . pure . Const) s
 (^!) :: Applicative m => s -> AMGetter m s a -> m a
 (^!) = flip mview
+
+infixl 8 ^!!
+mtoListOf :: Applicative m => MGetting m (Endo [a]) s a -> s -> m [a]
+mtoListOf getting s = flip appEndo [] . getConst <$> getCompose (getting (Compose . pure . Const . Endo . (:)) s)
+(^!!) :: Applicative m => s -> MGetting m (Endo [a]) s a -> m [a]
+(^!!) = flip mtoListOf
 
 infixl 8 !~
 mset, (!~) :: Applicative m => AMSetter m s t a b -> b -> s -> m t

@@ -13,7 +13,9 @@ spec = do
             it "works with lenses" $ do
                 ref <- newIORef ("Hello", 42)
                 ref ^! referenced . _2 `shouldReturn` 42
-            -- TODO: mToListOf
+            it "works with traversals" $ do
+                ref <- newIORef (0, 1)
+                ref ^!! referenced . both `shouldReturn` [0, 1]
         describe "setters" $ do
             it "works with lenses" $ do
                 ref <- newIORef ("Hello", 42)
@@ -29,6 +31,9 @@ spec = do
             it "works with lenses" $ do
                 v <- (,) <$> newIORef "Hello" <*> newIORef 42
                 v ^! _1 . referenced `shouldReturn` "Hello"
+            it "works with traversals" $ do
+                v <- (,) <$> newIORef "Hello" <*> newIORef "World"
+                v ^!! both . referenced `shouldReturn` ["Hello", "World"]
         describe "setters" $ do
             it "works with lenses" $ do
                 v@(ref1, _) <- (,) <$> newIORef "Hello" <*> newIORef 42
