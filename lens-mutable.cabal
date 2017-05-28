@@ -15,7 +15,9 @@ library
       base
     , lens
   exposed-modules:
-      Control.Lens.MLens
+      Control.Lens.Mutable
+      Control.Lens.Mutable.Class
+      Control.Lens.Mutable.Referenced
   default-language: Haskell2010
 
 test-suite spec

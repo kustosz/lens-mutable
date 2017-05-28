@@ -3,7 +3,7 @@
 
 module MLens.MLensSpec where
 
-import Control.Lens.MLens
+import Control.Lens.Mutable
 import Control.Lens
 
 import Data.IORef
@@ -14,14 +14,14 @@ import Test.QuickCheck         (property, Property, Arbitrary)
 prop_msetOnMview :: (Arbitrary a, Eq a) => a -> Property
 prop_msetOnMview a = monadicIO $ do
     ref <- run $ newIORef a
-    run $ mview refVal ref >>= \a -> mset refVal a ref
+    run $ mview referenced ref >>= \a -> mset referenced a ref
     res <- run $ readIORef ref
     assert $ res == a
 
 prop_mviewAfterMset :: (Arbitrary a, Eq a) => a -> a -> Property
 prop_mviewAfterMset a b = monadicIO $ do
     ref <- run $ newIORef a
-    res <- run $ mset refVal b ref >> mview refVal ref
+    res <- run $ mset referenced b ref >> mview referenced ref
     assert $ res == b
 
 spec :: Spec
@@ -32,11 +32,11 @@ spec = do
     describe "combination with ordinary lenses" $ do
         it "combines with lenses for pairs" $ do
             ref <- newIORef ("Hello", 42)
-            mset (refVal . _1) "World" ref
+            mset (referenced . _1) "World" ref
             res <- readIORef ref
             res `shouldBe` ("World", 42)
         it "combines with traversals" $ do
             ref <- newIORef (3, 4)
-            mover (refVal . both) succ ref
-            res <- mview refVal ref
+            mover (referenced . both) succ ref
+            res <- mview referenced ref
             res `shouldBe` (4, 5)
